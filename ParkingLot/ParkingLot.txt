@@ -1,0 +1,140 @@
+
+----- Questions
+
+Parking Types
+    Multi-floor?
+    Different spot sizes?
+    Vehicle types?
+    Electric charging spots?
+Features
+    Entry/exit gates?
+    Ticket generation?
+    Payment support?
+    Dynamic pricing?
+    Reservation support?
+Constraints
+    Concurrent entry?
+    Backend only?
+    Need nearest spot allocation?
+
+Assume interviewer says:
+
+Requirements
+    Multi-floor parking lot
+    Vehicle types:
+        Bike
+        Car
+        Truck
+    Spot types:
+        Small
+        Medium
+        Large
+    Entry/Exit gates
+    Ticket generation
+    Payment calculation
+    Nearest available spot
+    Backend only
+
+
+----- Identify Core Entities
+
+ParkingLot
+ParkingFloor
+ParkingSpot
+Vehicle
+Ticket
+Gate
+Payment
+PricingStrategy
+
+
+----- High level Design
+
+ParkingLot
+ ├── Floors
+ ├── Entry Gates
+ ├── Exit Gates
+ └── Parking Manager
+
+ParkingFloor
+ └── Parking Spots
+
+ParkingSpot
+ ├── Spot Type
+ ├── Occupied/Free
+ └── Vehicle
+
+Vehicle
+ ├── Bike
+ ├── Car
+ └── Truck
+
+Ticket
+ ├── Entry Time
+ ├── Spot
+ └── Vehicle
+
+
+------ code the solution aloud
+
+
+----- after coding the base solution , it should also be told
+
+1.) Pricing should use stratgey Pattern
+public interface PricingStrategy {
+    double calculateFee(Ticket ticket);
+}
+
+public class HourlyPricingStrategy implements PricingStrategy {}
+public class DaysPricingStrategy implements PricingStrategy {}
+
+2.) Gate Design (multiple gates should be incoporated)
+
+public abstract class Gate {
+
+    private int gateId;
+}
+
+public class EntryGate extends Gate {
+
+    public Ticket generateTicket(Vehicle vehicle) {
+    }
+}
+
+public class ExitGate extends Gate {
+
+    public void processExit(Ticket ticket) {
+    }
+}
+
+3.) Allocation policy should also be extensible.
+example : nearest spot , random spot , EV-preferred spot ,VIP spot
+Design : 
+interface SpotAllocationStrategy {
+    ParkingSpot assignSpot(Vehicle vehicle);
+}
+
+
+
+------ suggest improvements
+Improvement-1 : 
+Current Design:
+    for each floor
+        for each spot
+    TC: O(total spots)
+
+Better Design:
+    Map<SpotType,Queue<ParkingSpot>> , TC will be O(1)
+    When occupied remove from queue
+    When freed add back
+
+Improvement-2 : Concurrency (Two cars may get same spot)
+    synchronized allocation
+    ReentrantLock
+    DB transaction
+    distributed locking (if distributed)
+
+
+
+
+

@@ -1,0 +1,131 @@
+
+----- Questions:
+
+Functional
+    Topics or queues?
+    Multiple publishers?
+    Multiple subscribers?
+    Durable messages?
+    Retry support?
+    Ordering guarantees?
+    Pull or push consumption?
+    Acknowledgements?
+Constraints
+    Backend only?
+    Distributed scope?
+    Need persistence?
+    High throughput?
+
+
+Assume interviewer says:
+Requirements
+    Topics supported
+    Multiple publishers/subscribers
+    Async delivery
+    In-memory system
+    Push-based delivery
+    Retry failed deliveries
+    Backend only
+
+
+----- Identify Core Entities:
+Say this aloud:
+
+“Main entities I see are:”
+Publisher
+Subscriber
+Topic
+Message
+Broker
+Subscription
+RetryManager
+
+
+------ High-Level Design (Relationship)
+Publisher
+    ↓
+Broker
+    ↓
+Topic
+    ↓
+Subscribers
+
+More detailed : 
+
+PubSubBroker
+ ├── Topics
+ ├── Subscribers
+ └── Message Dispatcher
+
+Topic
+ ├── Subscribers
+ └── Messages
+
+Subscriber
+ └── consume(message)
+
+
+
+------ Specific discussion
+Publishers should NOT know subscribers directly.
+Why?
+    loose coupling
+    scalability
+    dynamic subscriptions
+This is core PubSub philosophy.
+
+
+------ code the solution aloud
+
+
+------ suggest improvements
+
+Improvement 1 — Retry Queue Concept
+    Queue<RetryMessage>
+    with:
+        retry count
+        retry timestamp
+
+    At-least-once delivery usually means: retries may duplicate messages
+    So subscribers should ideally be:idempotent
+
+
+Improvement 2 — Push vs Pull Discussion
+    Current design: push-based.Broker pushes to subscribers.
+    Alternative:
+        pull-based
+        subscriber polls messages
+
+Improvement 3 — Ordering Guarantees
+    Current: no strict ordering guarantee
+    To support ordering:
+        partitioning
+        single-thread processing per partition
+
+Improvement 4 — Persistence Discussion
+    Current: in-memory only
+    Production systems:
+        persist messages
+        support replay
+        crash recovery
+    Mention:
+        append-only logs
+
+Improvement 5 — Observer Pattern Discussion
+    PubSub is essentially distributed Observer Pattern.
+    Publisher → Observer(Broker) → Subscribers
+
+Improvement 6 — Concurrency
+    Problems:
+        concurrent publishers
+        concurrent subscriptions
+        race conditions
+        duplicate delivery
+    Solutions:
+        concurrent collections
+        locks
+        executor services
+
+
+
+
