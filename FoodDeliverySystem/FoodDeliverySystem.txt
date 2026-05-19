@@ -1,0 +1,95 @@
+----- Questions:
+
+Functional
+    Restaurant onboarding?
+    Menu support?
+    Order placement?
+    Delivery partner assignment?
+    Real-time tracking?
+    Payments?
+    Ratings/reviews?
+Constraints
+    Single city or multiple?
+    Backend only?
+    Need concurrency handling?
+    Order cancellation?
+    Inventory management?
+
+Assume interviewer says:
+
+    Users can:
+        browse restaurants
+        place orders
+    Restaurants manage menu
+    Delivery agents deliver orders
+    Auto-assignment of delivery agents
+    Order tracking
+    Payments
+    Backend only
+
+
+
+----- Identify Core Entities:
+User
+Restaurant
+MenuItem
+Order
+DeliveryAgent
+Payment
+OrderManager
+DeliveryStrategy
+
+
+
+------ High-Level Design (Relationship)
+
+FoodDeliverySystem
+ ├── Users
+ ├── Restaurants
+ ├── Orders
+ ├── Delivery Agents
+ └── Order Manager
+
+Restaurant
+ ├── Menu
+ └── Orders
+
+Order
+ ├── User
+ ├── Restaurant
+ ├── Items
+ ├── Status
+ ├── Payment
+ └── DeliveryAgent
+
+
+------ code the solution aloud
+
+
+
+------ suggest improvements
+Improvement 1 — Restaurant Search
+Naive:
+    scan all restaurants
+Better:
+    city index
+    geospatial indexing
+Mention:
+    scalable search service
+
+Improvement 2 — Observer Pattern
+Use for:
+    user notifications
+    restaurant updates
+    agent updates
+
+Improvement 3 — Concurrency
+Problems:
+    same agent assigned twice
+    duplicate orders
+    inventory overselling
+
+Solutions:
+    locking
+    DB transactions
+    optimistic concurrency

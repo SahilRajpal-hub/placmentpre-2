@@ -1,0 +1,127 @@
+
+----- Questions:
+
+Fixed board size?
+Single snake or multiplayer?
+Food generation random?
+Walls allowed?
+Snake dies on wall collision?
+Self collision?
+Need score?
+Need pause/resume?
+Backend only or UI?
+Thread safety needed?
+
+
+Assume interviewer says:
+
+Single snake
+Random food
+Snake dies on self/wall collision
+Score needed
+Backend only
+No concurrency
+
+
+
+------ Core Entities
+
+Game
+Board
+Snake
+Cell/Position
+Food
+Direction
+GameStatus
+
+
+
+----- High-Level Design
+
+Game
+ ├── Board
+ ├── Snake
+ ├── Food
+ ├── Score
+ └── GameStatus
+
+Snake
+ ├── Deque<Position> body
+ ├── currentDirection
+ └── occupiedCells
+
+Board
+ └── dimensions
+
+Food
+ └── Position
+
+
+
+------ Important Interview Discussion (VERY IMPORTANT)
+Before coding, say this:
+
+    For efficient collision detection and movement, I’ll use:
+        -Deque for snake body
+        -HashSet for O(1) collision lookup
+
+    Why Deque?
+        Snake operations:
+            add head → front
+            remove tail → back
+            -Perfect deque use case.
+
+    Why HashSet?
+        Without HashSet:
+            self collision = O(N)
+        With HashSet: O(1)
+
+
+
+----- code the solution
+
+
+----- After coding
+Time Complexity Discussion
+
+This is VERY important.
+
+Operation	Complexity
+Move snake	O(1)
+Add head	O(1)
+Remove tail	O(1)
+Collision check	O(1)
+Food check	O(1)
+
+Mention this proactively.
+
+
+----- Improvement 1 — Strategy Pattern for Food
+interface FoodGenerator {
+    Position generateFood();
+}
+
+Implementations:
+    RandomFoodGenerator
+    WeightedFoodGenerator
+    SpecialFoodGenerator
+
+----- Improvement 2 — Observer Pattern
+
+interface GameObserver {
+    void onScoreChange(int score);
+    void onGameOver();
+}
+
+----- Improvement 3 — Game Loop Separation
+Don’t keep loop inside game logic.
+
+Bad:
+while(true) {
+    move();
+}
+
+Better: keep unoccupied cells set to find from that set only
+
+----- Improvement 4 — Thread Safety
+Mention: synchronized move() or ReentrantLock

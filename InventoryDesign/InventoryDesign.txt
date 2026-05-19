@@ -1,0 +1,115 @@
+
+----- Questions
+
+Functional
+    Multiple warehouses?
+    Product catalog?
+    Inventory reservation?
+    Inventory release?
+    Purchase orders?
+    Restocking?
+    Low stock alerts?
+    Inventory transfer?
+Constraints
+    Backend only?
+    Need concurrency handling?
+    Real-time stock updates?
+    Distributed warehouses?
+
+Assume interviewer says:
+
+Requirements:
+    Products
+    Multiple warehouses
+    Stock management
+    Inventory reservation
+    Inventory deduction after order
+    Inventory release on cancellation
+    Backend only
+    Concurrent orders supported
+
+
+----- Identify Core Entities
+
+Product
+Warehouse
+Inventory
+Reservation
+Order
+InventoryManager
+StockMovement
+
+
+----- High level Design
+
+InventorySystem
+ ├── Products
+ ├── Warehouses
+ ├── Inventory
+ ├── Reservations
+ └── Orders
+
+Warehouse
+ └── InventoryItems
+
+InventoryItem
+ ├── Product
+ ├── Available Quantity
+ └── Reserved Quantity
+
+
+----- specific discussion
+1.)
+Never directly reduce stock during checkout.    
+Instead:
+    reserve inventory
+    confirm payment/order
+    deduct stock finally
+2.)
+Use: SKU (Stock Keeping Unit)
+because: inventory systems identify products using SKU
+
+
+
+------ code the solution aloud
+
+
+----- after coding the base solution , it should also be told
+
+
+------ suggest improvements
+Improvement-1 : Concurrency
+    “Inventory management is a high-contention consistency problem, especially during flash sales.”
+    Option 1 — DB Row Locking
+    Option 2 — Optimistic Locking
+    Option 3 — Distributed Lock
+
+Improvement-2 : Reservation Expiry
+    Suppose: user abandons checkout
+    Need: auto-release inventory
+    Approaches:
+        scheduler
+        TTL cache
+        background cleanup job
+
+Improvement-3 : Warehouse Allocation
+    Suppose:
+        multiple warehouses
+
+    Need:
+        nearest warehouse
+        maximum availability
+        shipping optimization
+
+    interface WarehouseSelectionStrategy{}
+
+Improvement-4 : Low Stock Alerts
+    if(quantity < threshold)
+    Trigger:
+        restocking workflow
+        notifications
+
+
+
+
+

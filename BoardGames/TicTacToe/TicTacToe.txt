@@ -1,0 +1,84 @@
+
+----- Questions:
+
+Is board always 3x3?
+Two players only?
+CLI or backend only?
+Need undo/redo?
+Need move history?
+Need AI bot?
+Need winner detection?
+Need thread safety?
+
+
+Assume interviewer says:
+
+NxN configurable
+2 players
+backend only
+winner detection needed
+no AI
+no concurrency
+
+
+----- Identify Core Entities:
+Say this aloud:
+
+“Main entities I see are:”
+
+Game
+Board
+Player
+Piece/Symbol
+Move
+GameStatus
+
+
+------ High-Level Design (Relationship)
+Game
+ ├── Board
+ ├── Players
+ ├── Current Turn
+ └── Game Status(enum)
+
+Board
+ └── Cell[][]
+
+Player
+ └── Symbol(enum)
+
+
+
+------ code the solution aloud
+
+
+------ suggest improvements
+
+Improvement 1 — Strategy Pattern
+
+    Different winning strategies:
+
+    1) classic
+    2) connect-4 style
+    3) custom rules
+
+    interface WinningStrategy {
+        boolean checkWinner(Board board, Move move);
+    }
+
+    class RowWinningStrategy implements WinningStrategy
+    class DiagonalWinningStrategy implements WinningStrategy
+
+Improvement 2 — Support Multiple Players
+    Instead of hardcoding 2 Players
+    -> List<Player> players;
+
+Improvement 3 — Undo Feature
+    Store - Stack<Move> moves;
+
+Improvement 4 — Thread Safety
+    Mention:
+        synchronize makeMove()
+        or use game-level lock
+
+

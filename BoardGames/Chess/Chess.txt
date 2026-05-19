@@ -1,0 +1,130 @@
+
+----- Questions
+Need all chess rules?
+Multiplayer/networking?
+Timers?
+Undo/redo?
+Move history?
+Castling?
+En passant?
+Promotion?
+Check/checkmate?
+Draw detection?
+Backend only?
+
+Assume interviewer says:
+
+YES:
+
+all standard chess rules
+backend only
+two players
+move validation
+check/checkmate
+castling
+promotion
+
+NO:
+
+networking
+timers
+persistence
+
+
+
+----- Biggest Design Decision
+SAY : “The key challenge is modeling piece movement cleanly without creating large conditional logic.”
+
+BAD:
+if(piece == KING) ...
+else if(piece == QUEEN) ...
+
+Instead:
+    polymorphism
+    strategy-based movement
+
+
+
+----- Identify Core Entities:
+Game
+Board
+Cell
+Piece
+Move
+Player
+Position
+GameStatus
+
+
+----- High level Design
+ChessGame
+ ├── Board
+ ├── Players
+ ├── Current Turn
+ ├── Move History
+ └── Game Status
+
+Board
+ └── Cell[][]
+
+Cell
+ └── Piece
+
+Piece (abstract)
+ ├── King
+ ├── Queen
+ ├── Bishop
+ ├── Knight
+ ├── Rook
+ └── Pawn
+
+
+------ code the solution aloud
+
+
+
+------ suggest improvements
+Improvement-1 : Strategy Pattern in Movement rules.
+Alternative design:
+
+interface MoveStrategy {
+    boolean validate(...);
+}
+Used by pieces.
+
+
+Improvement-2 : Command Pattern
+Move itself becomes command.
+Useful for:
+    undo
+    replay
+    persistence
+
+
+
+Improvement-3 : State Pattern
+Game states:
+    active
+    paused
+    ended
+
+
+
+Improvement-4 : Observer Pattern
+UI updates:
+    onMove()
+    onCheck()
+    onCheckmate()
+
+Decouples backend/UI.
+
+
+
+------ Time Complexity Discussion
+Operation	        Complexity
+Move validation	    O(1) or O(N)
+Check detection	    O(Pieces)
+Checkmate	        Expensive
+
+Mention:
+    acceptable because board fixed size (8x8)

@@ -1,0 +1,134 @@
+
+----- Questions:
+
+Functional
+    Multiple cities?
+    Multiple theaters?
+    Multiple screens?
+    Seat selection?
+    Seat locking?
+    Payments?
+    Booking cancellation?
+    Coupons/offers?
+Constraints
+    Concurrent bookings?
+    Backend only?
+    Real-time seat updates?
+    Distributed system scope?
+
+
+Assume interviewer says:
+
+Requirements:
+    Multiple cities
+    Movies
+    Theaters/screens
+    Shows
+    Seat selection
+    Seat locking
+    Payments
+    Booking confirmation
+    Backend only
+    Concurrent users supported
+
+
+----- Identify Core Entities:
+Say this aloud:
+
+“Main entities I see are:”
+
+Movie
+Theater
+Screen
+Show
+Seat
+User
+Booking
+Payment
+SeatLock
+
+
+------ High-Level Design (Relationship)
+BookMyShow
+ ├── Movies
+ ├── Theaters
+ ├── Shows
+ ├── Bookings
+ └── Payments
+
+Theater
+ ├── Screens
+ └── Seats
+
+Show
+ ├── Movie
+ ├── Screen
+ ├── Timing
+ └── ShowSeats
+
+Booking
+ ├── User
+ ├── Seats
+ ├── Payment
+ └── Status
+
+
+------ specific discussion/clarification
+VERY important: Seats are NOT directly booked from theater seats.
+
+Instead: every show has its own seat state
+This is CRITICAL.
+Because:
+    same physical seat
+    different shows
+    different availability
+
+
+
+------ code the solution aloud
+
+
+------ suggest improvements
+
+Improvement 1 — Concurrency
+    Problem:
+        Multiple users booking same seat simultaneously
+    Solutions
+    Option 1 — DB Row Locking
+        SELECT ... FOR UPDATE
+    Option 2 — Distributed Lock
+        Redis/Zookeeper.
+    Option 3 — Optimistic Locking
+        Version-based updates.
+
+    say : Seat booking is a classic high-contention concurrency problem.
+
+Improvement 2 — Lock Expiry
+    If user abandons payment: seats should auto-release
+    Approaches:
+        scheduler
+        TTL cache
+        Redis expiry
+ 
+Improvement 3 — Search Support
+    Search by:
+        city
+        movie
+        theater
+        timing
+
+    Can introduce: SearchService
+
+Improvement 4 — Pricing Strategy
+    Pricing may depend on:
+        seat type
+        weekend
+        surge pricing
+        offers
+    can introduce : interface PricingStrategy
+
+Improvement 4 — Observer Pattern
+    Useful for:
+        booking notifications
+        reminders
+        cancellation alerts

@@ -1,0 +1,85 @@
+
+----- Questions:
+
+Functional
+    Single elevator or multiple?
+    Up/down requests?
+    Internal floor buttons?
+    Capacity limits?
+    Emergency mode?
+    Maintenance mode?
+Scheduling
+    Nearest elevator?
+    SCAN/LOOK algorithm?
+    Priority elevators?
+Scope
+    Backend only?
+    Real-time updates?
+    Need concurrency handling?
+
+Assume interviewer says:
+Requirements
+    Multiple elevators
+    Internal + external requests
+    Up/down requests
+    Capacity check
+    Nearest elevator allocation
+    Backend only
+    Basic optimization
+    No persistence
+
+
+----- Identify Core Entities:(say verbally)
+
+ElevatorSystem
+Elevator
+ElevatorController
+Request
+Floor
+Button
+ElevatorScheduler
+
+
+
+------ High-Level Design (Relationship)
+
+ElevatorSystem
+ ├── Elevators
+ └── Scheduler
+
+Elevator
+ ├── Current Floor
+ ├── Direction
+ ├── State
+ ├── Pending Requests
+ └── Capacity
+
+Request
+ ├── ExternalRequest
+ └── InternalRequest
+
+
+------ code the solution aloud
+
+
+------ suggest improvements
+
+Improvement 1 — State Modeling
+Elevator can be:
+    moving
+    idle
+    maintenance
+
+if/else will introduce too many conditionals and duplicate logic
+
+Improvement 2 — Concurrency
+Problem:
+    multiple requests simultaneously
+    same elevator assigned twice
+
+Solution:
+    synchronized request assignment
+    locks(ReentrantLock)
+    concurrent queues
+
+

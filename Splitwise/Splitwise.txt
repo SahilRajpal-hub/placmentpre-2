@@ -1,0 +1,83 @@
+
+----- Questions:
+
+Functional
+    Equal split?
+    Exact split?
+    Percentage split?
+    Groups?
+    Simplify debts?
+    Expense history?
+    Settlements?
+    Multi-currency?
+Scope
+    Backend only?
+    Real-time updates?
+    Need persistence?
+
+Assume interviewer says:
+    Users
+    Groups
+    Add expense
+    Split types:
+        equal
+        exact
+        percentage
+    Balance tracking
+    Simplified debt view
+    Backend only
+
+
+----- Identify Core Entities:
+    User
+    Group
+    Expense
+    Split
+    BalanceSheet
+    ExpenseManager
+    SplitStrategy
+
+
+
+------ High-Level Design (Relationship)
+Splitwise
+ ├── Users
+ ├── Groups
+ └── ExpenseManager
+
+Expense
+ ├── PaidBy
+ ├── Amount
+ ├── Splits
+ └── SplitType
+
+Split
+ ├── User
+ └── Amount
+
+BalanceSheet
+ └── who owes whom
+
+
+
+------ code the solution aloud
+
+
+------ suggest improvements
+Improvement 1 — Debt Simplification
+Approach
+    Maintain net balances
+
+    Then:
+        creditors list
+        debtors list
+
+    Use greedy settlement.
+
+Improvement 2 — Concurrency
+Problem: multiple expenses added simultaneously.Can corrupt balances.
+
+Solution:
+    synchronized balance update
+    transactional DB updates
+    distributed locking

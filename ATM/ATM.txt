@@ -1,0 +1,96 @@
+
+----- Questions:
+
+Functional
+    Withdraw cash?
+    Deposit?
+    Balance inquiry?
+    Mini statement?
+    PIN validation?
+    Multiple accounts?
+Constraints
+    Backend only?
+    Need concurrency handling?
+    Need bank integration?
+    Need transaction history?
+
+Assume interviewer says:
+Requirements
+    Card insertion
+    PIN authentication
+    Cash withdrawal
+    Balance inquiry
+    Cash dispensing
+    Backend only
+    Multiple accounts supported
+    Basic transaction history
+
+
+----- Identify Core Entities:
+Say this aloud:
+
+“Main entities I see are:”
+
+ATM
+Card
+BankAccount
+Transaction
+CashDispenser
+ATMState
+BankingService
+
+
+------ High-Level Design (Relationship)
+ATM
+ ├── ATM State
+ ├── Cash Dispenser
+ ├── Card Reader
+ └── Banking Service
+
+Card
+ └── BankAccount
+
+Transaction
+ ├── Withdraw
+ ├── Deposit
+ └── Balance Inquiry
+
+CashDispenser
+ ├── TwoThousandDispenser
+ ├── FiveHundredDispenser
+ └── HundredDispenser
+
+
+
+------ Specific discussion/clarification
+ATM workflow is highly stateful.
+
+IDLE
+↓
+CARD_INSERTED
+↓
+AUTHENTICATED
+↓
+TRANSACTION_SELECTED
+↓
+CASH_DISPENSED
+
+
+
+------ code the solution aloud
+
+
+------ suggest improvements
+
+Improvement 1 — Concurrency Discussion
+    Problem:
+        multiple withdrawals simultaneously(from different ATMs)
+        balance inconsistency
+        ATM cash inconsistency
+
+    Solutions:
+        DB transactions
+        account-level locking
+        synchronized cash inventory updates
+
+
